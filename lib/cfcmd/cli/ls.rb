@@ -32,7 +32,17 @@ class CFcmd::CLI
     end
 
     def ls_files
-      raise NotImplementedError
+      bucket    = uri.host
+      prefix    = uri.path[1..-1]
+      directory = connection.directories.get(bucket, prefix: prefix)
+      files     = directory.files
+      max_bytes = files.map(&:content_length).max.to_s.length
+
+      output = files.map do |file|
+        "#{ file.last_modified }  %-#{ max_bytes }s cf://#{ bucket }/#{ file.key }" % file.content_length.to_s
+      end
+
+      output.join("\n")
     end
   end
 end
