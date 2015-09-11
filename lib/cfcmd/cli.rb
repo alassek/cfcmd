@@ -64,5 +64,15 @@ module CFcmd
     def ls(uri = nil)
       puts Ls.new(connection, uri).run
     end
+
+    desc "la", "List all objects in all buckets"
+    def la
+      connection.directories.each do |dir|
+        puts Ls.new(connection, "cf://#{ dir.key }").ls_files
+        print "\n"
+      end
+    rescue Interrupt
+      print "\n"
+    end
   end
 end
