@@ -36,19 +36,21 @@ module CFcmd
     desc "configure", "Invoke interactive (re)configuration tool."
     def configure
       config_file = File.expand_path(ENV['HOME'] + '/.cfcmd')
-      config      = { rackspace: {} }
+      config      = {}
 
       print "Rackspace Username: "
-      config[:rackspace][:username] = STDIN.gets.chomp
+      config[:username] = STDIN.gets.chomp
+
       print "Rackspace API key: "
-      config[:rackspace][:api_key] = STDIN.gets.chomp
+      config[:api_key] = STDIN.gets.chomp
+
       print "Default Region [ord]: "
       region = STDIN.gets.chomp
       region = 'ord' unless region.length > 0
-      config[:rackspace][:region] = region
+      config[:region] = region
 
       File.open config_file, 'w' do |file|
-        file.write TOML::Generator.new(config).body
+        file.write TOML::Generator.new(rackspace: config).body
       end
 
       puts "Wrote configuration to #{ config_file }"
