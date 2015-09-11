@@ -68,7 +68,7 @@ module CFcmd
     desc "la", "List all objects in all buckets"
     def la
       connection.directories.each do |dir|
-        puts Ls.new(connection, "cf://#{ dir.key }").ls_files
+        puts Ls.new(connection, dir).ls_files
         print "\n"
       end
     rescue Interrupt
