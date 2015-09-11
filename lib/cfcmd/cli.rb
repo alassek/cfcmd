@@ -54,8 +54,6 @@ module CFcmd
       end
 
       puts "Wrote configuration to #{ config_file }"
-    rescue Interrupt
-      print "\n"
     end
 
     map '--configure' => 'configure'
@@ -71,8 +69,6 @@ module CFcmd
         puts Ls.new(connection, dir).ls_files
         print "\n"
       end
-    rescue Interrupt
-      print "\n"
     end
   end
 end

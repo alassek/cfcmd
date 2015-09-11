@@ -2,4 +2,8 @@
 
 require "cfcmd"
 
-CFcmd::CLI.start(ARGV)
+begin
+  CFcmd::CLI.start(ARGV)
+rescue Interrupt
+  print "\n"
+end
