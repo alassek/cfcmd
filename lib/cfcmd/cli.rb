@@ -58,11 +58,6 @@ module CFcmd
 
     map '--configure' => 'configure'
 
-    desc 'test', 'test'
-    def test
-      connection.account
-    end
-
     desc "ls [cf://BUCKET[/PREFIX]] [options]", "List objects or buckets"
     def ls(uri = nil)
       puts Ls.new(connection, uri).run
