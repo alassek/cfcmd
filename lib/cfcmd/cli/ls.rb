@@ -16,7 +16,7 @@ class CFcmd::CLI
       directories = connection.directories.map do |dir|
         {
           name:  "cf://#{ dir.key }",
-          files: ::CFcmd::Util.number_to_human(dir.files.count),
+          files: ::CFcmd::Util.number_to_human(dir.count),
           size:  ::CFcmd::Util.number_to_human_size(dir.bytes)
         }
       end
