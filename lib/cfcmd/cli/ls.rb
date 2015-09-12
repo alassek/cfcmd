@@ -38,7 +38,8 @@ class CFcmd::CLI
       max_bytes = files.map(&:content_length).max.to_s.length
 
       output = files.map do |file|
-        "#{ file.last_modified }  %-#{ max_bytes }s cf://#{ directory.key }/#{ file.key }" % file.content_length.to_s
+        timestamp = file.last_modified.localtime.strftime("%Y-%m-%d %H:%M")
+        "#{ timestamp }  %-#{ max_bytes }s cf://#{ directory.key }/#{ file.key }" % file.content_length.to_s
       end
 
       output.join("\n")
