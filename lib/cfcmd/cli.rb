@@ -7,6 +7,12 @@ module CFcmd
     require_relative "cli/ls"
 
     class_option :region, :type => :string, aliases: '-R'
+    class_option :debug, :type => :boolean, default: false
+
+    def initialize(*)
+      super
+      ENV['EXCON_DEBUG'] = 'true' if options['debug']
+    end
 
     no_commands do
       def config
