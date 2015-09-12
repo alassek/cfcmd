@@ -76,5 +76,21 @@ module CFcmd
         print "\n"
       end
     end
+
+    method_option :public, :type => :boolean, default: false
+
+    desc "mb cf://BUCKET", "Make bucket"
+    def mb(uri)
+      bucket = URI(uri).host or abort("Invalid bucket URI: #{ uri }")
+      connection.directories.create(key: bucket, public: options['public'])
+      puts "Bucket 'cf://#{ bucket }/' created"
+    end
+
+    desc "rb cf://BUCKET", "Remove Bucket"
+    def rb(uri)
+      bucket = URI(uri).host or abort("Invalid bucket URI: #{ uri }")
+      connection.delete_container(bucket)
+      puts "Bucket 'cf://#{ bucket }/' deleted"
+    end
   end
 end
