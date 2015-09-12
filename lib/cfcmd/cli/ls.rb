@@ -32,6 +32,8 @@ class CFcmd::CLI
     end
 
     def ls_files
+      return if directory.count == 0
+
       files     = directory.files
       max_bytes = files.map(&:content_length).max.to_s.length
 
