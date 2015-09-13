@@ -131,5 +131,16 @@ module CFcmd
         end
       end
     end
+
+    desc "del cf://BUCKET/OBJECT", "Delete file from bucket"
+    desc "rm cf://BUCKET/OBJECT", "Alias for del"
+    def del(uri)
+      parsed = URI(uri)
+      parsed.scheme or abort "ERROR: Parameter problem: Expecting CF URI instead of '#{ uri }'"
+      connection.delete_object(parsed.host, parsed.path[1..-1])
+      puts "File #{ parsed } deleted."
+    end
+
+    map 'rm' => 'del'
   end
 end
