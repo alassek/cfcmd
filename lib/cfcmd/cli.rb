@@ -92,5 +92,44 @@ module CFcmd
       connection.delete_container(bucket)
       puts "Bucket 'cf://#{ bucket }/' deleted"
     end
+
+    desc "put FILE [FILE...] cf://BUCKET[/PREFIX]", "Put file(s) into bucket"
+    def put(*args)
+      abort "ERROR: not enough parameters for command 'put'" unless args.length > 1
+      uri       = URI(args.pop)
+      filenames = args.select { |filename| File.exist?(filename) }
+      abort "ERROR: Parameter problem: Destination must be CFUri. Got: #{ uri.host }" if uri.scheme.nil?
+      abort "ERROR: Parameter problem: Nothing to upload." unless filenames.length > 0
+
+      bucket = connection.directories.get(uri.host, prefix: uri.path[1..-1])
+      abort "ERROR: The specified bucket does not exist" unless bucket
+
+      filenames.each_with_index do |filename, i|
+        begin
+          file  = File.open(filename, 'r')
+          type  = MIME::Types.type_for(filename).first.content_type
+          chunk = 0
+          size  = File.size(file)
+          key   = uri.path[1..-1] || ''
+          key  += '/' if key.length > 0
+          key  += File.basename(file)
+
+          print "#{ File.basename(file) } -> cf://#{ bucket.key }/#{ key }"
+          print "  [#{ i + 1 } of #{ filenames.length }]" if filenames.length > 0
+          print "\n"
+          print " %-#{ size.to_s.length }s of #{ size }    0\%" % '0'
+          bucket.files.create(key: key, content_type: type) do
+            chunk  += size < 1048576 ? size : 1048576
+            percent = ((chunk.to_f / size) * 100).round.to_s
+            print "\r %-#{ size.to_s.length }s of #{ size }  %-3s\%" % [chunk, percent]
+
+            file.read(1048576)
+          end
+          puts "\r #{ size } of #{ size }  100% done"
+        ensure
+          file.close
+        end
+      end
+    end
   end
 end
